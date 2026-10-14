@@ -32,10 +32,24 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var database = scope.ServiceProvider.GetRequiredService<StudioDbContext>();
-    // Local-development starter only: replace EnsureCreated with EF migrations before production.
-    if (app.Environment.IsDevelopment()) database.Database.EnsureCreated();
+    // This is a local-only MVP; a production database requires audited EF migrations.
+    // Never silently create/modify a live customer database at application startup.
+    if (!app.Environment.IsDevelopment())
+        throw new InvalidOperationException(
+            "CareerCraft Studio is not ready for production hosting. Run locally with the http Development launch profile; production requires migrations and security hardening.");
+
+    await database.Database.EnsureCreatedAsync();
+    // EnsureCreated cannot extend an existing database that was created with a
+    // different schema. Detect it explicitly rather than failing on login.
+    var identityTables = await database.Database
+        .SqlQueryRaw<int>("SELECT COUNT(*) AS Value FROM sqlite_master WHERE type='table' AND name IN ('AspNetUsers','AspNetRoles')")
+        .SingleAsync();
+    if (identityTables != 2)
+        throw new InvalidOperationException(
+            "The local careercraft.db has an incomplete/old schema (missing Identity tables). Back up the existing database and create a fresh local database, or migrate its data. Do not delete a database containing real data.");
+
     var roles = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-    if (database.Database.CanConnect() && !await roles.RoleExistsAsync("Admin"))
+    if (!await roles.RoleExistsAsync("Admin"))
         await roles.CreateAsync(new IdentityRole("Admin"));
     // Explicit local-only admin bootstrap; never expose admin registration publicly.
     if (app.Environment.IsDevelopment() && args.Contains("--seed-admin"))

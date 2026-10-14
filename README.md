@@ -67,12 +67,12 @@ Install the [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0).
 git clone https://github.com/ST10458151/careercraft-studio.git
 cd careercraft-studio
 dotnet restore CareerCraft.Web/CareerCraft.Web.csproj
-dotnet run --project CareerCraft.Web
+dotnet run --project CareerCraft.Web --launch-profile http
 ```
 
-Open the localhost address shown in Terminal. The app creates its local SQLite database via `EnsureCreated()` when running in the Development environment. Never commit the database or customer files.
+Open the localhost address shown in Terminal. The `http` launch profile sets `ASPNETCORE_ENVIRONMENT=Development`. The app creates its local SQLite database via `EnsureCreated()` in this environment. Never commit the database or customer files.
 
-**Important if upgrading from the earlier phase:** It had no database. If you have a development database created by a different schema, back it up and use a fresh local database; the MVP doesn't support migrations yet.
+**If you saw `no such table: AspNetUsers` or `AspNetRoles`:** the previous launch ran in Production mode and never initialized Identity. Pull the updated launch profile, then run using `--launch-profile http`. If an older local database has an incomplete schema, stop the app, back up your database file before making changes, and only replace it with a fresh local test database when you know it contains no important records. This MVP doesn't support migrations yet. Never delete genuine customer data.
 
 ### Create a local admin account
 
@@ -81,11 +81,11 @@ There is **no public admin registration page**. The role and a development-only 
 ```bash
 export CAREERCRAFT_ADMIN_EMAIL="admin@example.test"
 export CAREERCRAFT_ADMIN_PASSWORD="Choose-a-long-unique-password!"
-dotnet run --project CareerCraft.Web -- --seed-admin
+dotnet run --project CareerCraft.Web --launch-profile http -- --seed-admin
 unset CAREERCRAFT_ADMIN_EMAIL CAREERCRAFT_ADMIN_PASSWORD
 ```
 
-Replace the example email and password with your own development-only credentials. Use a **unique password** that is not used on any other site. The `--seed-admin` bootstrap is only accepted while the app runs in Development and requires environment variables.
+Replace the example email and password with your own development-only credentials. Don't paste a real password into chat, logs, or screenshots; if a password is ever exposed, rotate it immediately. Use a **unique password** that is not used on any other site. The `--seed-admin` bootstrap is only accepted while the app runs in Development and requires environment variables.
 
 To see the customer flow, register a separate customer account and create a CV request.
 

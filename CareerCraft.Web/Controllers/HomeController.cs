@@ -1,6 +1,5 @@
 using CareerCraft.Web.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace CareerCraft.Web.Controllers;
 
@@ -13,10 +12,10 @@ public class HomeController(ServiceCatalogue catalogue) : Controller
     public IActionResult Services() => View(catalogue.All);
 
     [HttpGet]
-    public IActionResult Request(string? service)
+    public IActionResult Enquiry(string? service)
     {
         var selection = service is not null && catalogue.Find(service) is not null ? service : "";
-        return View(new EnquiryViewModel { ServiceSlug = selection, Services = catalogue.All });
+        return View("Request", new EnquiryViewModel { ServiceSlug = selection, Services = catalogue.All });
     }
 
     // Phase 1 intentionally avoids receiving/storing a completed enquiry at the server:

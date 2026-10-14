@@ -2,6 +2,10 @@
 **/obj/
 **/.vs/
 **/*.user
+**/*.db
+**/*.db-shm
+**/*.db-wal
+CareerCraftPrivateFiles/
 .DS_Store
 .env
 **/appsettings.Development.json

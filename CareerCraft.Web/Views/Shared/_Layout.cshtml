@@ -19,15 +19,15 @@
       <a asp-controller="Home" asp-action="Index" asp-fragment="approach">Our approach</a>
       <a asp-controller="Home" asp-action="Services">Services &amp; pricing</a>
       <a asp-controller="Home" asp-action="Index" asp-fragment="how">How it works</a>
-      <a asp-controller="Home" asp-action="Index" asp-fragment="faq">FAQs</a>
+      <a asp-controller="Home" asp-action="Index" asp-fragment="faq">FAQs</a>@if(User.Identity?.IsAuthenticated==true){<a asp-controller="Orders" asp-action="Index">My orders</a><a asp-controller="Documents" asp-action="Index">My documents</a>@if(User.IsInRole("Admin")){<a asp-controller="Admin" asp-action="Index">Admin</a>}}
     </nav>
-    <a class="nav-cta" asp-controller="Home" asp-action="Request">Get started <span>↗</span></a>
+    @if(User.Identity?.IsAuthenticated==true){<form asp-controller="Account" asp-action="Logout" method="post" class="nav-logout"><button type="submit">Sign out ↗</button></form>}else{<a class="nav-cta" asp-controller="Account" asp-action="Login">Sign in <span>↗</span></a>}
     <button class="menu-button" id="menuButton" type="button" aria-expanded="false" aria-controls="siteNav" aria-label="Toggle navigation">☰</button>
   </div></header>
   <main>@RenderBody()</main>
   <footer class="footer"><div class="container footer-top">
     <div><div class="footer-brand">careercraft<span>✳</span></div><p>Better documents. Stronger first impressions.<br />A more confident next chapter.</p></div>
-    <div><strong>EXPLORE</strong><a asp-controller="Home" asp-action="Index">Home</a><a asp-controller="Home" asp-action="Services">Services</a><a asp-controller="Home" asp-action="Request">Start a request</a></div>
+    <div><strong>EXPLORE</strong><a asp-controller="Home" asp-action="Index">Home</a><a asp-controller="Home" asp-action="Services">Services</a><a asp-controller="Orders" asp-action="Create">Start a request</a></div>
     <div><strong>INFORMATION</strong><a asp-controller="Home" asp-action="Privacy">Privacy &amp; launch status</a><a href="mailto:s.khan0701@icloud.com">Contact</a><span>Johannesburg, South Africa</span></div>
   </div><div class="container footer-bottom"><span>© <span id="year">2026</span> CareerCraft Studio. All rights reserved.</span><span>Crafted for what's next.</span></div></footer>
   <script src="~/js/site.js" asp-append-version="true"></script>

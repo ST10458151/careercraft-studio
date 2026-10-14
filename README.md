@@ -4,63 +4,62 @@
 
 ### Professional CV Writing & Career Services
 
-**Your next chapter deserves a beautiful introduction.**
+*Your next chapter deserves a beautiful introduction.*
 
-A premium ASP.NET Core MVC website for a planned South African CV-writing and career-support business.
+A full-stack **ASP.NET Core MVC** application for a planned South African CV writing business.
 
-**Phase 1: website + service catalogue + email-based enquiry workflow.**  
-**Not yet accepting online payments or CV uploads.**
+**Development stage: Customer accounts, CV requests, private local documents and admin workflow. No live payments.**
 
 ![C#](https://img.shields.io/badge/C%23-.NET_10-512BD4?logo=dotnet)
-![ASP.NET Core MVC](https://img.shields.io/badge/ASP.NET_Core-MVC-4A5278)
-![Status](https://img.shields.io/badge/Status-Phase_1_Preview-D8BA89)
-![License](https://img.shields.io/badge/Location-South_Africa-14263A)
+![ASP.NET Core](https://img.shields.io/badge/ASP.NET_Core-MVC-223A52)
+![Identity](https://img.shields.io/badge/Auth-ASP.NET_Identity-55798B)
+![SQLite](https://img.shields.io/badge/Database-SQLite-003B57?logo=sqlite)
+![Status](https://img.shields.io/badge/Status-Local_Development_Only-B68B6A)
 
 </div>
 
 ---
 
-## About
+## Overview
 
-CareerCraft Studio is being developed as a real CV-writing service. Customers will eventually be able to select a service, securely upload their existing CV, specify target jobs, pay online, check their order status and receive finished documents.
+CareerCraft Studio aims to let customers select a CV service, describe their work history and target vacancies, securely share supporting documents and follow the progress of their CV request. Administrators can manage cases and their files.
 
-The first release focuses on an original, responsive user interface, a **configurable services catalogue** and a low-risk enquiry process. This release does **not** accept payment, store orders, process CV files or host customer accounts.
+**This implementation is a development MVP. Do not deploy publicly or accept genuine customers, CVs or payments yet.** Significant production-security work remains, detailed below.
 
-## Phase 1 features
-
-- Premium responsive homepage with original CSS CV illustration
-- Dedicated services and pricing page
-- Configurable prices and turnaround-time descriptions
-- Multi-field enquiry form with selected service and target job title
-- Optional vacancy link and career goals
-- Browser validation and a prefilled email enquiry workflow
-- Detailed FAQs and privacy/launch-status page
-- Mobile navigation and accessible form labels
-- No database, document uploads, payment processing or customer data persistence yet
-
-### Configurable service prices
+### Configurable services (ZAR)
 
 | Service | Draft price |
-|---|---:|
+| --- | ---: |
 | CV Refresh | **R200** |
 | Professional CV | **R350** |
 | Cover Letter | **R150** |
 | Career Bundle | **R500** |
 
-All are in **South African Rand (ZAR)** and configurable in `CareerCraft.Web/appsettings.json`, under `Studio.Services`. Service details, timelines and prices are read via the `ServiceCatalogue` class.
+Prices and descriptions are configured centrally in `CareerCraft.Web/appsettings.json` under `Studio.Services`. When a customer submits a request, the selected service price is recorded with the order. Orders do not count as payments.
 
-**Note:** Prices, timelines and scope must be confirmed with the customer before accepting a real order.
+## Current features
+
+- Responsive editorial landing page, service pages and FAQs
+- Customer registration and login using ASP.NET Core Identity
+- Password strength policy, lockout support and cookie authentication
+- Customer-only views of CV requests and attached documents
+- Detailed career briefing: education, experience, skills, achievements and career goals
+- Target positions, vacancy links and job descriptions for tailored CV requests
+- **My Documents**: attach an existing CV, cover letter, qualifications or vacancy documents to a specific request
+- PDF/DOCX extension and file-signature checks, 8 MB per-file limit
+- Random server-side filenames stored **outside `wwwroot`**
+- Authorised download and file removal endpoints
+- Admin-only dashboard for all requests, status changes and document access
+- Revision request facility when an order is marked Ready for Review
+- Payments shown as unavailable/pending: **there is no checkout and no automatic marking of orders as paid**
 
 ## Tech stack
 
-- C# / .NET 10
-- ASP.NET Core MVC + Razor Views
-- HTML, custom CSS and vanilla JavaScript
-- Options pattern for configurable catalogue data
-- Responsive and accessible web forms
-- Email draft generated client-side with `mailto:`
+**C# / .NET 10 · ASP.NET Core MVC · ASP.NET Core Identity · Entity Framework Core · SQLite (local development) · Razor · CSS · Vanilla JavaScript**
 
-## Run locally
+A production release should move to a managed database, schema migrations, production-grade private object storage, secure authentication workflows and verified payment integration.
+
+## Get started locally
 
 Install the [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0).
 
@@ -71,47 +70,72 @@ dotnet restore CareerCraft.Web/CareerCraft.Web.csproj
 dotnet run --project CareerCraft.Web
 ```
 
-Open the localhost URL displayed in the terminal.
+Open the localhost address shown in Terminal. The app creates its local SQLite database via `EnsureCreated()` when running in the Development environment. Never commit the database or customer files.
 
-**GitHub Pages cannot run ASP.NET Core.** This application needs a .NET hosting provider to run online.
+**Important if upgrading from the earlier phase:** It had no database. If you have a development database created by a different schema, back it up and use a fresh local database; the MVP doesn't support migrations yet.
 
-## Project structure
+### Create a local admin account
 
-```text
-careercraft-studio/
-├── CareerCraft.Web/
-│   ├── Controllers/HomeController.cs
-│   ├── Models/
-│   │   ├── StudioSettings.cs
-│   │   └── EnquiryViewModel.cs
-│   ├── Views/Home/
-│   │   ├── Index.cshtml
-│   │   ├── Services.cshtml
-│   │   ├── Request.cshtml
-│   │   ├── Privacy.cshtml
-│   │   └── Error.cshtml
-│   ├── Views/Shared/_Layout.cshtml
-│   ├── wwwroot/css/studio.css
-│   ├── wwwroot/js/site.js
-│   ├── appsettings.json
-│   ├── Program.cs
-│   └── CareerCraft.Web.csproj
-└── README.md
+There is **no public admin registration page**. The role and a development-only administrator can be provisioned explicitly from Terminal:
+
+```bash
+export CAREERCRAFT_ADMIN_EMAIL="admin@example.test"
+export CAREERCRAFT_ADMIN_PASSWORD="Choose-a-long-unique-password!"
+dotnet run --project CareerCraft.Web -- --seed-admin
+unset CAREERCRAFT_ADMIN_EMAIL CAREERCRAFT_ADMIN_PASSWORD
 ```
 
-## Next development phases
+Replace the example email and password with your own development-only credentials. Use a **unique password** that is not used on any other site. The `--seed-admin` bootstrap is only accepted while the app runs in Development and requires environment variables.
 
-1. **Orders & authentication** — ASP.NET Core Identity, customer/admin roles, PostgreSQL and EF Core migrations.
-2. **Secure document processing** — private PDF/DOCX uploads, validation, virus/malware scanning, controlled downloads, retention policy and audit trails.
-3. **Payments** — select a South African gateway, implement hosted checkout, validate webhooks server-side and handle payment lifecycle events idempotently.
-4. **Customer experience** — order status, document delivery, revisions, transactional emails and support.
-5. **Production hardening** — tests, CI, deployments, HTTPS, monitoring, backups, business policies and POPIA compliance review.
+To see the customer flow, register a separate customer account and create a CV request.
 
-### Real-business safeguards
+## Project layout
 
-Before accepting real customer CVs or money, implement authentication and authorisation, secure file storage, webhook verification, database backups, privacy and retention policies, accurate commercial terms and an appropriate hosting environment. **Never commit actual customer documents, credentials or payment keys to a public repository.**
+```text
+CareerCraft.Web/
+├── Controllers/
+│   ├── AccountController.cs     # Register, login, logout
+│   ├── AdminController.cs       # Admin order management
+│   ├── DocumentsController.cs   # Authenticated upload / download / delete
+│   ├── OrdersController.cs      # Customer requests and revisions
+│   └── HomeController.cs        # Public marketing site
+├── Data/
+│   └── StudioDbContext.cs       # Identity and order models
+├── Models/
+│   ├── OrderModels.cs           # Orders, files, revisions and intake form
+│   └── StudioSettings.cs        # Configurable service catalogue
+├── Views/
+│   ├── Account/                # Customer authentication
+│   ├── Orders/                 # Request wizard and order detail
+│   ├── Documents/              # My Documents
+│   ├── Admin/                  # Private administration
+│   └── Home/                   # Public website
+├── wwwroot/                    # Public styles and scripts ONLY
+└── appsettings.json            # Development configuration
+```
 
-The current enquiry form opens a draft in the visitor's local email application. The user must explicitly send it, and the website does not record the request. This is not a secure file-transfer channel; do not request identity documents or CV attachments through this preview.
+Private documents are saved to `CareerCraftPrivateFiles/`, a sibling of the ASP.NET project folder, and are excluded from Git. File downloads go through an authenticated controller rather than a publicly served URL.
+
+## Security status and launch blockers
+
+The current safeguards (Identity, authenticated routes, role checks, anti-forgery validation, size limits and upload file signatures) are **not sufficient for accepting real customer CVs**.
+
+Before production you must implement and test:
+
+1. **Verified email, password resets, MFA for admins**, account recovery and production cookie/security settings.
+2. **EF Core migrations and a managed database** (PostgreSQL is planned), with backups and audited schema changes.
+3. **Hardened private file storage** with malware scanning, safe DOCX ZIP inspection, file quarantine, quota and rate controls, access logging, secure deletion and retention.
+4. **Verified South African payment gateway integration**, server-to-server notifications/webhooks, replay handling and idempotent order-payment transactions.
+5. **Security testing** for role escalation, cross-account access, upload abuse, request size limits, privacy leaks, brute-force attempts and CSRF.
+6. **POPIA-related operating procedures**: accurate privacy notices, lawful processing, retention, breach response, appropriate service agreements and access controls.
+7. **Commercial and operational rules** for revision limits, cancellations, refunds, order acceptance and delivery.
+8. **Operational hosting** with HTTPS, protected secrets, structured logging, monitoring, disaster recovery and environment isolation.
+
+`EnsureCreated()` is used only for the local development MVP and will be replaced with EF migrations. The application does not send email verification messages. No payment provider or backend order payment confirmation exists yet. Never collect real customer documents before addressing these blockers.
+
+## Next roadmap milestone
+
+Prepare a staging environment, migrate to PostgreSQL with migrations, integrate a verified email provider and admin MFA, and implement a private cloud upload service with malware scanning. After these security features and tests are complete, integrate hosted checkout via a South African payment gateway.
 
 ---
 

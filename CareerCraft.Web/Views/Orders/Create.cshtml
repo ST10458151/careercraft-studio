@@ -1,0 +1,17 @@
+@model OrderForm
+@{ViewData["Title"]="New CV Request";}
+<section class="inner-hero portal-heading"><div class="container"><p class="section-kicker">ORDER INTAKE / STEP 01</p><h1>Tell us about<br/><em>your next move.</em></h1><p>Build a detailed career brief. After saving, you'll be able to attach your current CV, qualifications and job-specific documents.</p></div></section>
+<section class="section"><div class="container request-layout"><aside class="request-sidebar"><p class="section-kicker">YOUR BRIEF</p><h2>Let's make it<br/><em>about you.</em></h2><p>The more context you provide, the more accurately your documents can be tailored. Avoid entering ID numbers or financial information.</p><div class="mini-process"><b>01</b> Career details<br/><b>02</b> Upload documents<br/><b>03</b> Review progress</div></aside>
+<form asp-action="Create" method="post" class="portal-card order-intake"><div asp-validation-summary="All" class="form-errors"></div><p class="form-section-label">01 / CHOOSE YOUR SERVICE</p><label asp-for="ServiceSlug">Service package *</label><select asp-for="ServiceSlug" required><option value="">Select a service</option>@foreach(var s in Model.Services){<option value="@s.Slug">@s.Name — R @s.Price.ToString("0")</option>}</select><p class="small-note">The price will be saved with your request. No payment is collected in this development version.</p>
+<div class="form-separator"></div><p class="form-section-label">02 / YOUR CAREER</p>
+<label asp-for="TargetRole">Target position *</label><input asp-for="TargetRole" placeholder="e.g. Graduate Software Engineer" required/>
+<label asp-for="Industry">Industry / sector</label><input asp-for="Industry" placeholder="e.g. Financial services, technology"/>
+<label asp-for="Education">Education &amp; qualifications</label><textarea asp-for="Education" rows="4" placeholder="Degrees, certifications, institutions and dates"></textarea>
+<label asp-for="Experience">Work experience</label><textarea asp-for="Experience" rows="5" placeholder="Employers, roles, responsibilities, achievements and dates"></textarea>
+<label asp-for="Achievements">Career achievements</label><textarea asp-for="Achievements" rows="4" placeholder="Measurable results, awards, leadership experience"></textarea>
+<label asp-for="Skills">Skills &amp; technical strengths</label><textarea asp-for="Skills" rows="3" placeholder="Key skills relevant to your future roles"></textarea>
+<label asp-for="CareerGoals">Your goals and preferences</label><textarea asp-for="CareerGoals" rows="4" placeholder="What would you like us to improve or emphasise?"></textarea>
+<div class="form-separator"></div><p class="form-section-label">03 / TARGET SPECIFIC JOBS</p>
+<label asp-for="JobLinks">Job adverts or vacancy URLs</label><textarea asp-for="JobLinks" rows="3" placeholder="Paste one or more links, ideally one per line"></textarea>
+<label asp-for="JobDescription">Job descriptions / special requirements</label><textarea asp-for="JobDescription" rows="5" placeholder="Paste relevant requirements and keywords from roles you want to apply for"></textarea>
+<button type="submit" class="button button-dark submit-button">Save request &amp; continue to documents ↗</button><p class="small-note">Your details are saved in the local application database. Do not use real customer information until production security and compliance checks are complete.</p></form></div></section>

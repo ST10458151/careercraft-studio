@@ -9,7 +9,7 @@ builder.Services.Configure<StudioSettings>(builder.Configuration.GetSection("Stu
 builder.Services.AddSingleton<ServiceCatalogue>();
 builder.Services.AddDbContext<StudioDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("Studio") ?? "Data Source=careercraft.db"));
-builder.Services.AddDefaultIdentity<IdentityUser>(options =>
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 {
     options.SignIn.RequireConfirmedAccount = false; // Local development only; add verified email before launch.
     options.Password.RequiredLength = 12;
@@ -17,7 +17,8 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options =>
     options.Lockout.MaxFailedAccessAttempts = 5;
     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
 })
-.AddRoles<IdentityRole>().AddEntityFrameworkStores<StudioDbContext>();
+.AddEntityFrameworkStores<StudioDbContext>()
+.AddDefaultTokenProviders();
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Account/Login";

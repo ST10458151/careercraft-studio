@@ -1,0 +1,22 @@
+@model EnquiryViewModel
+@{ ViewData["Title"] = "Start an Enquiry"; }
+<section class="inner-hero request-hero"><div class="container"><p class="section-kicker">YOUR NEXT STEP / ENQUIRY</p><h1>Let's talk about<br /><em>where you're headed.</em></h1><p>Tell us a little about the career move you have in mind. This first version creates an email draft on your device; it does not submit or store your details on our website.</p></div></section>
+<section class="section enquiry-section"><div class="container enquiry-layout"><div class="enquiry-copy"><p class="section-kicker">THE DETAILS</p><h2>It's your story.<br /><em>Start here.</em></h2><p>Choose a service, share the role you're aiming for and tell us what you're hoping to improve.</p><div class="enquiry-aside"><b>✳ A QUICK NOTE</b><p>Please don't enter ID numbers, home addresses, references or other sensitive personal information at this stage. Secure CV uploads are not available yet.</p></div></div>
+<form class="enquiry-form" id="enquiryForm" data-contact="s.khan0701@icloud.com" novalidate>
+  <p class="form-section-label">01 / THE SERVICE</p>
+  <label for="service">Which service interests you? <span>*</span></label>
+  <select id="service" name="service" required>
+    <option value="">Choose a service…</option>
+    @foreach(var s in Model.Services){<option value="@s.Slug" data-name="@s.Name" data-price="@s.Price" selected="@(s.Slug == Model.ServiceSlug ? "selected" : null)">@s.Name — R @s.Price.ToString("0")</option>}
+  </select>
+  <div class="selected-summary" id="selectedSummary" aria-live="polite">Select a service to see its draft price.</div>
+  <div class="form-separator"></div><p class="form-section-label">02 / ABOUT YOU</p>
+  <div class="form-two"><div><label for="fullName">Full name <span>*</span></label><input id="fullName" name="fullName" type="text" maxlength="100" required autocomplete="name" placeholder="Your name" /></div><div><label for="email">Email address <span>*</span></label><input id="email" name="email" type="email" maxlength="200" required autocomplete="email" placeholder="you@example.com" /></div></div>
+  <label for="targetRole">What kind of job are you targeting? <span>*</span></label><input id="targetRole" name="targetRole" required maxlength="180" placeholder="e.g. Junior Software Developer, Office Administrator" />
+  <label for="jobLink">Specific vacancy link (optional)</label><input id="jobLink" name="jobLink" type="url" maxlength="250" placeholder="https://example.com/job-ad" />
+  <label for="goals">What would you like help with? (optional)</label><textarea id="goals" name="goals" maxlength="1200" rows="5" placeholder="Tell us your career direction and what you'd like your new CV or cover letter to communicate…"></textarea>
+  <label class="checkline"><input type="checkbox" id="acknowledge" required /><span>I understand this is an initial email enquiry, not an order or payment. I will not include sensitive documents or confidential information at this stage. <b>*</b></span></label>
+  <p class="form-notice" id="formNotice" role="status">This is an enquiry only. No payment will be requested on this website.</p>
+  <button class="button button-dark submit-button" type="submit">Prepare email enquiry <span>↗</span></button>
+  <p class="form-footer">Your email program will open with a prepared message. Review it and press Send there to contact the studio. No information is stored by this page.</p>
+</form></div></section>

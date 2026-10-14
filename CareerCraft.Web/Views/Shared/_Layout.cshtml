@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#14263a" />
+  <meta name="description" content="CareerCraft Studio — thoughtful CV writing, career documents and application support for the next chapter of your career." />
+  <title>@ViewData["Title"] | CareerCraft Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="~/css/studio.css" asp-append-version="true" />
+</head>
+<body>
+  <div class="announcement">YOUR NEXT CHAPTER, THOUGHTFULLY CRAFTED <span aria-hidden="true">✦</span> PROFESSIONAL CV &amp; CAREER SERVICES</div>
+  <header class="site-header"><div class="nav-wrap">
+    <a class="brand" asp-controller="Home" asp-action="Index" aria-label="CareerCraft Studio home"><span class="brand-symbol">c<span>✳</span></span><span class="brand-text">careercraft<small>STUDIO</small></span></a>
+    <nav id="siteNav" class="site-nav" aria-label="Main navigation">
+      <a asp-controller="Home" asp-action="Index" asp-fragment="approach">Our approach</a>
+      <a asp-controller="Home" asp-action="Services">Services &amp; pricing</a>
+      <a asp-controller="Home" asp-action="Index" asp-fragment="how">How it works</a>
+      <a asp-controller="Home" asp-action="Index" asp-fragment="faq">FAQs</a>
+    </nav>
+    <a class="nav-cta" asp-controller="Home" asp-action="Request">Get started <span>↗</span></a>
+    <button class="menu-button" id="menuButton" type="button" aria-expanded="false" aria-controls="siteNav" aria-label="Toggle navigation">☰</button>
+  </div></header>
+  <main>@RenderBody()</main>
+  <footer class="footer"><div class="container footer-top">
+    <div><div class="footer-brand">careercraft<span>✳</span></div><p>Better documents. Stronger first impressions.<br />A more confident next chapter.</p></div>
+    <div><strong>EXPLORE</strong><a asp-controller="Home" asp-action="Index">Home</a><a asp-controller="Home" asp-action="Services">Services</a><a asp-controller="Home" asp-action="Request">Start a request</a></div>
+    <div><strong>INFORMATION</strong><a asp-controller="Home" asp-action="Privacy">Privacy &amp; launch status</a><a href="mailto:s.khan0701@icloud.com">Contact</a><span>Johannesburg, South Africa</span></div>
+  </div><div class="container footer-bottom"><span>© <span id="year">2026</span> CareerCraft Studio. All rights reserved.</span><span>Crafted for what's next.</span></div></footer>
+  <script src="~/js/site.js" asp-append-version="true"></script>
+  @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

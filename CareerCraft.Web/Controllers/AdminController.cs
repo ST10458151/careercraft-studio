@@ -72,8 +72,15 @@ public class AdminController(StudioDbContext db) : Controller
         return View(vm);
     }
 
+    [HttpGet]
+    public async Task<IActionResult> Details(int id)
+    {
+        var order = await db.Orders.AsNoTracking().Include(x => x.Documents).Include(x => x.Revisions).FirstOrDefaultAsync(x => x.Id == id);
+        return order == null ? NotFound() : View(order);
+    }
+
     [HttpPost, ValidateAntiForgeryToken]
-    public async Task<IActionResult> ChangeStatus(int id, OrderStage stage, string? returnFilter, string? returnSearch)
+    public async Task<IActionResult> ChangeStatus(int id, OrderStage stage, string? returnFilter, string? returnSearch, bool returnToCase = false)
     {
         var order = await db.Orders.FindAsync(id);
         if (order == null) return NotFound();
@@ -86,6 +93,6 @@ public class AdminController(StudioDbContext db) : Controller
         order.Stage = stage;
         await db.SaveChangesAsync();
         TempData["Success"] = $"Request #{order.Id:D5} updated to {stage}.";
-        return RedirectToAction(nameof(Index), new { filter = returnFilter, search = returnSearch });
+        return returnToCase ? RedirectToAction(nameof(Details),new { id }) : RedirectToAction(nameof(Index), new { filter = returnFilter, search = returnSearch });
     }
 }

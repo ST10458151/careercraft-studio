@@ -27,9 +27,11 @@ public class DocumentsController(StudioDbContext db,IWebHostEnvironment environm
     {
         var order=await db.Orders.AsNoTracking().FirstOrDefaultAsync(x=>x.Id==orderId&&(x.CustomerId==UserId||User.IsInRole("Admin")));
         if(order==null)return NotFound();
-        if(file==null||file.Length==0||file.Length>MaxFileBytes){TempData["Error"]="Select a PDF or DOCX file up to 8 MB.";return RedirectToAction("Details","Orders",new{id=orderId});}
+        if(file==null||file.Length==0||file.Length>MaxFileBytes){TempData["Error"]="Select a PDF or DOCX file up to 8 MB.";return User.IsInRole("Admin") ? RedirectToAction("Details","Admin",new{id=orderId}) : RedirectToAction("Details","Orders",new{id=orderId});}
         string extension=Path.GetExtension(file.FileName).ToLowerInvariant();
         if(extension!=".pdf"&&extension!=".docx"){TempData["Error"]="Only PDF and DOCX files are supported.";return RedirectToAction("Details","Orders",new{id=orderId});}
+        if (!Enum.IsDefined(kind)) return BadRequest();
+        if (User.IsInRole("Admin") && kind != DocumentKind.FinalDocument) return BadRequest();
         if(kind==DocumentKind.FinalDocument&&!User.IsInRole("Admin"))return Forbid();
         await using var stream=file.OpenReadStream();
         var header=new byte[5];int count=await stream.ReadAsync(header.AsMemory());
@@ -62,6 +64,7 @@ public class DocumentsController(StudioDbContext db,IWebHostEnvironment environm
         var doc=await db.Documents.AsNoTracking().Include(x=>x.Order).FirstOrDefaultAsync(x=>x.Id==id);
         if(doc==null)return NotFound();
         if(doc.Order.CustomerId!=UserId&&!User.IsInRole("Admin"))return Forbid();
+        if(doc.Kind==DocumentKind.FinalDocument && !User.IsInRole("Admin") && doc.Order.Stage != OrderStage.ReadyForReview && doc.Order.Stage != OrderStage.Completed) return Forbid();
         var file=Path.Combine(Root,Path.GetFileName(doc.StorageName));
         if(!System.IO.File.Exists(file))return NotFound();
         return PhysicalFile(file,doc.ContentType,doc.OriginalName);
@@ -76,6 +79,6 @@ public class DocumentsController(StudioDbContext db,IWebHostEnvironment environm
         db.Documents.Remove(doc);await db.SaveChangesAsync();
         System.IO.File.Delete(Path.Combine(Root,Path.GetFileName(doc.StorageName)));
         TempData["Success"]="Document removed.";
-        return RedirectToAction("Details","Orders",new{id=doc.OrderId});
+        return User.IsInRole("Admin") ? RedirectToAction("Details","Admin",new{id=doc.OrderId}) : RedirectToAction("Details","Orders",new{id=doc.OrderId});
     }
 }

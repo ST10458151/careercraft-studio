@@ -40,7 +40,7 @@ public class OrdersController(StudioDbContext db,ServiceCatalogue catalogue) : C
     public async Task<IActionResult> Details(int id)
     {
         var order=await db.Orders.AsNoTracking().Include(x=>x.Documents).Include(x=>x.Revisions)
-            .FirstOrDefaultAsync(x=>x.Id==id&&(x.CustomerId==UserId||User.IsInRole("Admin")));
+            .FirstOrDefaultAsync(x=>x.Id==id&&x.CustomerId==UserId);
         return order==null?NotFound():View(order);
     }
     [HttpPost,ValidateAntiForgeryToken]

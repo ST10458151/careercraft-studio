@@ -38,7 +38,12 @@ public class AccountController(UserManager<IdentityUser> users,SignInManager<Ide
     {
         if(!ModelState.IsValid)return View(form);
         var result=await signIn.PasswordSignInAsync(form.Email.Trim(),form.Password,isPersistent:false,lockoutOnFailure:true);
-        if(result.Succeeded)return LocalRedirect(Url.IsLocalUrl(returnUrl)?returnUrl:"/Orders");
+        if(result.Succeeded)
+        {
+            if (Url.IsLocalUrl(returnUrl)) return LocalRedirect(returnUrl!);
+            var user = await users.FindByEmailAsync(form.Email.Trim());
+            return user != null && await users.IsInRoleAsync(user,"Admin") ? RedirectToAction("Index","Admin") : RedirectToAction("Index","Orders");
+        }
         ModelState.AddModelError("","Invalid credentials or temporarily locked account.");return View(form);
     }
     [Authorize,HttpPost,ValidateAntiForgeryToken]

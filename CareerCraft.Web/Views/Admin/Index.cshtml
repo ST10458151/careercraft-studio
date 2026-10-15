@@ -98,7 +98,7 @@
                   </div>
                 </div>
                 <div class="request-actions">
-                  <a class="admin-open" asp-controller="Orders" asp-action="Details" asp-route-id="@item.Id">Open client brief <span>↗</span></a>
+                  <a class="admin-open" asp-controller="Admin" asp-action="Details" asp-route-id="@item.Id">Open client brief <span>↗</span></a>
                   <form asp-action="ChangeStatus" method="post" class="admin-stage-form">
                     <input type="hidden" name="id" value="@item.Id" />
                     <input type="hidden" name="returnFilter" value="@Model.Filter" />

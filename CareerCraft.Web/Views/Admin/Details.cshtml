@@ -1,0 +1,29 @@
+@model CvOrder
+@{
+ ViewData["Title"]="Manage client request";
+ var supplied=Model.Documents.Where(x=>x.Kind!=DocumentKind.FinalDocument).OrderByDescending(x=>x.UploadedUtc).ToList();
+ var delivered=Model.Documents.Where(x=>x.Kind==DocumentKind.FinalDocument).OrderByDescending(x=>x.UploadedUtc).ToList();
+}
+<section class="workspace-page"><div class="container">
+<a class="workspace-back" asp-controller="Admin" asp-action="Index">← Back to client requests</a>
+<div class="workspace-top"><div><p class="section-kicker">ADMIN / CLIENT CASE #@Model.Id.ToString("D5")</p><h1>@Model.ServiceName</h1><p>Target position: <b>@Model.TargetRole</b> · Received @Model.CreatedUtc.ToLocalTime().ToString("dd MMM yyyy")</p></div><div class="workspace-price"><small>QUOTE</small><strong>R @Model.PriceZar.ToString("0")</strong><span>Checkout not active</span></div></div>
+@if(TempData["Success"] is string success){<div class="portal-success">@success</div>}
+@if(TempData["Error"] is string error){<div class="form-errors">@error</div>}
+<nav class="workspace-jump"><a href="#brief">01 Client brief</a><a href="#customer-files">02 Customer files (@supplied.Count)</a><a href="#delivery">03 Deliver work</a><a href="#status">04 Update progress</a></nav>
+<div class="workspace-columns"><div>
+<section class="workspace-panel" id="brief"><div class="workspace-panel-title"><span>01 / REVIEW</span><h2>Client career brief</h2><p>Information provided by the customer for this service.</p></div><div class="workspace-fields">
+@foreach(var field in new (string Name,string? Value)[]{("Target role",Model.TargetRole),("Industry",Model.Industry),("Education",Model.Education),("Work experience",Model.Experience),("Achievements",Model.Achievements),("Skills",Model.Skills),("Career goals",Model.CareerGoals),("Specific vacancy links",Model.JobLinks),("Job descriptions",Model.JobDescription)}){<div><strong>@field.Name</strong><p>@(string.IsNullOrWhiteSpace(field.Value)?"Not supplied":field.Value)</p></div>}
+</div></section>
+<section class="workspace-panel" id="customer-files"><div class="workspace-panel-title"><span>02 / SOURCE MATERIALS</span><h2>Documents from customer</h2><p>These are the files the customer attached to this request.</p></div>
+@if(supplied.Count==0){<p class="workspace-placeholder">No supporting documents have been uploaded.</p>}
+else{<div class="workspace-files">@foreach(var doc in supplied){<div><span class="file-illustration">▤</span><div><b>@doc.OriginalName</b><small>@doc.Kind · @Math.Ceiling(doc.SizeBytes/1024d) KB</small></div><a asp-controller="Documents" asp-action="Download" asp-route-id="@doc.Id">Download ↗</a></div>}</div>}</section>
+<section class="workspace-panel" id="delivery"><div class="workspace-panel-title"><span>03 / SEND CLIENT WORK</span><h2>Upload finished documents</h2><p>Add the completed CV or letter. Once uploaded, mark the case Ready for Review so the customer can download it.</p></div>
+<form asp-controller="Documents" asp-action="Upload" method="post" enctype="multipart/form-data" class="workspace-upload"><input type="hidden" name="orderId" value="@Model.Id"/><input type="hidden" name="kind" value="@((int)DocumentKind.FinalDocument)"/><label for="deliveryFile">Select finished PDF or Word file (up to 8 MB)</label><input id="deliveryFile" name="file" type="file" accept=".pdf,.docx" required/><button type="submit">Upload finished document ↗</button></form>
+@if(delivered.Count>0){<div class="workspace-files">@foreach(var doc in delivered){<div><span class="file-illustration">✓</span><div><b>@doc.OriginalName</b><small>Final document · @doc.UploadedUtc.ToLocalTime().ToString("dd MMM yyyy")</small></div><a asp-controller="Documents" asp-action="Download" asp-route-id="@doc.Id">Download ↗</a></div>}</div>}
+</section></div>
+<aside><section id="status" class="workspace-panel workspace-aside"><div class="workspace-panel-title"><span>04 / CASE MANAGEMENT</span><h2>Manage progress</h2><p>Current stage: <strong>@Model.Stage.ToString()</strong></p></div><form asp-controller="Admin" asp-action="ChangeStatus" method="post"><input type="hidden" name="id" value="@Model.Id"/><input type="hidden" name="returnToCase" value="true"/><label for="caseStage">Set order stage</label><select name="stage" id="caseStage">
+@foreach(var stage in Enum.GetValues<OrderStage>()){<option value="@((int)stage)" selected="@(stage==Model.Stage)">@stage.ToString()</option>}
+</select><button type="submit">Save stage ↗</button></form>
+<div class="stage-help"><p><b>Submitted</b> — newly received</p><p><b>InReview</b> — checking information</p><p><b>InProgress</b> — writing the documents</p><p><b>ReadyForReview</b> — client can download</p><p><b>Completed</b> — work closed</p></div></section>
+<section class="workspace-panel workspace-aside"><div class="workspace-panel-title"><span>CLIENT FEEDBACK</span><h2>Revision requests</h2></div>@if(Model.Revisions.Count==0){<p class="workspace-placeholder">No revisions requested.</p>}else{@foreach(var rev in Model.Revisions.OrderByDescending(x=>x.CreatedUtc)){<div class="revision-entry"><b>@rev.CreatedUtc.ToLocalTime().ToString("dd MMM yyyy")</b><span>@rev.Message</span></div>}}</section>
+</aside></div></div></section>

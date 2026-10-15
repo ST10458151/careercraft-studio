@@ -11,6 +11,9 @@ public class DocumentsController(StudioDbContext db,IWebHostEnvironment environm
 {
     private const long MaxFileBytes=8*1024*1024;
     private string UserId=>User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+    private IActionResult ReturnToOrder(int orderId) => User.IsInRole("Admin")
+        ? RedirectToAction("Details", "Admin", new { id = orderId })
+        : RedirectToAction("Details", "Orders", new { id = orderId });
     // Outside wwwroot, therefore never served by StaticFiles middleware.
     private string Root => Path.GetFullPath(Path.Combine(environment.ContentRootPath,"..","CareerCraftPrivateFiles"));
     [HttpGet]
@@ -27,9 +30,9 @@ public class DocumentsController(StudioDbContext db,IWebHostEnvironment environm
     {
         var order=await db.Orders.AsNoTracking().FirstOrDefaultAsync(x=>x.Id==orderId&&(x.CustomerId==UserId||User.IsInRole("Admin")));
         if(order==null)return NotFound();
-        if(file==null||file.Length==0||file.Length>MaxFileBytes){TempData["Error"]="Select a PDF or DOCX file up to 8 MB.";return User.IsInRole("Admin") ? RedirectToAction("Details","Admin",new{id=orderId}) : RedirectToAction("Details","Orders",new{id=orderId});}
+        if(file==null||file.Length==0||file.Length>MaxFileBytes){TempData["Error"]="Select a PDF or DOCX file up to 8 MB.";return ReturnToOrder(orderId);}
         string extension=Path.GetExtension(file.FileName).ToLowerInvariant();
-        if(extension!=".pdf"&&extension!=".docx"){TempData["Error"]="Only PDF and DOCX files are supported.";return RedirectToAction("Details","Orders",new{id=orderId});}
+        if(extension!=".pdf"&&extension!=".docx"){TempData["Error"]="Only PDF and DOCX files are supported.";return ReturnToOrder(orderId);}
         if (!Enum.IsDefined(kind)) return BadRequest();
         if (User.IsInRole("Admin") && kind != DocumentKind.FinalDocument) return BadRequest();
         if(kind==DocumentKind.FinalDocument&&!User.IsInRole("Admin"))return Forbid();
@@ -37,7 +40,7 @@ public class DocumentsController(StudioDbContext db,IWebHostEnvironment environm
         var header=new byte[5];int count=await stream.ReadAsync(header.AsMemory());
         var signatureOk=extension==".pdf"?(count>=4&&header[0]==37&&header[1]==80&&header[2]==68&&header[3]==70):
             (count>=4&&header[0]==80&&header[1]==75&&header[2]==3&&header[3]==4);
-        if(!signatureOk){TempData["Error"]="The file content doesn't match a supported PDF or DOCX.";return RedirectToAction("Details","Orders",new{id=orderId});}
+        if(!signatureOk){TempData["Error"]="The file content doesn't match a supported PDF or DOCX.";return ReturnToOrder(orderId);}
         // Signature checks are not malware scanning. Production needs scanning and stricter DOCX inspection.
         stream.Position=0;
         Directory.CreateDirectory(Root);
@@ -56,7 +59,7 @@ public class DocumentsController(StudioDbContext db,IWebHostEnvironment environm
         }
         catch {System.IO.File.Delete(fullPath);throw;}
         TempData["Success"]="Document uploaded to the private local file area.";
-        return RedirectToAction("Details","Orders",new{id=orderId});
+        return ReturnToOrder(orderId);
     }
     [HttpGet]
     public async Task<IActionResult> Download(int id)
@@ -79,6 +82,6 @@ public class DocumentsController(StudioDbContext db,IWebHostEnvironment environm
         db.Documents.Remove(doc);await db.SaveChangesAsync();
         System.IO.File.Delete(Path.Combine(Root,Path.GetFileName(doc.StorageName)));
         TempData["Success"]="Document removed.";
-        return User.IsInRole("Admin") ? RedirectToAction("Details","Admin",new{id=doc.OrderId}) : RedirectToAction("Details","Orders",new{id=doc.OrderId});
+        return ReturnToOrder(doc.OrderId);
     }
 }

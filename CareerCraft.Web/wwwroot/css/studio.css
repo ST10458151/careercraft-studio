@@ -82,3 +82,85 @@
 @media(max-width:1060px){.portal-wrap{gap:30px}.detail-columns{grid-template-columns:1fr}.nav-wrap{gap:12px}.site-nav{gap:12px}.site-nav a{font-size:11px}.overview-boxes{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:800px){.portal-wrap,.request-layout{grid-template-columns:1fr;padding:55px 22px;gap:30px}.portal-art{display:none}.nav-logout{margin-left:auto}.dashboard-head{align-items:start;flex-direction:column}.order-grid{grid-template-columns:1fr}.request-layout{padding-top:60px}.admin-order{grid-template-columns:1fr}.admin-search{width:100%}.admin-search input{min-width:0;flex:1}.admin-search .button{white-space:nowrap}}
 @media(max-width:550px){.portal-wrap{padding:40px 15px}.portal-intro h1{font-size:40px}.portal-card,.order-intake{padding:24px 20px}.portal-card h2{font-size:26px}.overview-boxes{grid-template-columns:1fr 1fr}.overview-boxes>div{padding:17px 12px}.overview-boxes strong{font-size:13px}.nav-logout button{padding:9px;font-size:10px}.file-row{align-items:flex-start}.request-layout{padding:48px 15px}.admin-order{padding:18px}}
+
+
+/* Admin command centre — Phase 2 workspace refresh */
+.admin-shell{background:#f7f5f0;padding:0 0 95px;min-height:80vh}
+.admin-welcome{display:flex;justify-content:space-between;align-items:center;gap:24px;padding:67px 0 46px}
+.admin-welcome h1{font:400 clamp(30px,3.45vw,47px)/1.3 'Libre Baskerville',Georgia,serif;letter-spacing:-1.3px;color:var(--navy);margin:0}
+.admin-welcome h1 em{color:#b28a70}
+.admin-welcome p:not(.section-kicker){font-size:13px;color:#788080;line-height:1.75;margin:16px 0 0}
+.admin-mode{align-self:flex-start;border:1px solid #d3d1c8;padding:12px 16px;font-size:9px;color:#64736f;letter-spacing:1px;font-weight:800;white-space:nowrap}
+.admin-mode small{font-size:8px;display:block;color:#a68770;margin:6px 0 0 15px;letter-spacing:1px}
+.mode-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#70917f;margin-right:7px}
+.admin-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin-bottom:22px}
+.admin-metric{background:#fffdfa;border:1px solid #ded8cb;padding:21px 21px 19px;display:flex;flex-direction:column;min-height:156px;transition:transform .15s,border-color .15s}
+.admin-metric:hover{transform:translateY(-2px);border-color:#ba9b77}
+.admin-metric:nth-child(1){border-top:3px solid #bc8d65}
+.admin-metric:nth-child(2){border-top:3px solid #758a91}
+.admin-metric:nth-child(3){border-top:3px solid #a5ab84}
+.admin-metric:nth-child(4){border-top:3px solid #73947b}
+.metric-top{display:flex;justify-content:space-between;gap:8px;font-size:9px;font-weight:800;color:#aa856b;letter-spacing:1.15px}
+.metric-symbol{font-size:22px;color:#a4a7a0;line-height:1}
+.admin-metric>strong{font:400 39px 'Libre Baskerville',Georgia,serif;color:#1b3347;margin:13px 0 16px}
+.metric-foot{border-top:1px solid #e9e5dd;padding-top:11px;display:flex;justify-content:space-between;gap:6px;font-size:10px;color:#77807d}
+.metric-foot>span{color:#ab8669}
+.admin-notice{background:#ece8e0;border-left:3px solid #b69673;padding:14px 18px;display:flex;align-items:center;gap:14px;font-size:11px;line-height:1.8;color:#6c746f}
+.admin-notice>span{font-size:23px;color:#a18365}
+.admin-notice strong{color:#384d56}
+.admin-workspace-head{display:flex;justify-content:space-between;align-items:end;gap:25px;margin:78px 0 32px}
+.admin-workspace-head h2{font-size:34px;letter-spacing:-1px}
+.admin-workspace-head p:not(.section-kicker){font-size:12px;color:#778180;line-height:1.9;max-width:550px}
+.admin-total{border-left:1px solid #c9c6bc;padding-left:30px;min-width:135px;display:flex;flex-direction:column;gap:7px}
+.admin-total strong{font:400 36px 'Libre Baskerville',serif}
+.admin-total span{font-size:9px;letter-spacing:1px;color:#a68b72;font-weight:800}
+.admin-toolbar{background:#fffefa;border:1px solid #ded9d0;padding:13px 16px;display:flex;justify-content:space-between;gap:18px;align-items:center;flex-wrap:wrap}
+.admin-tabs{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.admin-tabs a{display:inline-flex;align-items:center;gap:8px;padding:10px 12px;border-radius:2px;font-size:10px;font-weight:800;color:#657176;transition:background .15s}
+.admin-tabs a span{border-radius:12px;background:#f0ede6;padding:3px 7px;color:#79807a;font-size:9px}
+.admin-tabs a.is-active{background:#1a3448;color:#fff}
+.admin-tabs a.is-active span{background:#465e6b;color:#fff}
+.admin-find{display:flex;align-items:center;gap:7px}
+.admin-find input{min-width:185px;width:225px;background:#f9f7f2;border:1px solid #d9d6ce;padding:12px;font-size:11px;color:#183144}
+.admin-find button{border:0;background:#1a3448;color:#fff;padding:12px 14px;font-size:10px;font-weight:800}
+.clear-search{font-size:10px;color:#a47c62;text-decoration:underline}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.admin-request-list{display:grid;gap:12px;margin-top:15px}
+.admin-request{background:#fffefa;border:1px solid #ded9cf;display:grid;grid-template-columns:50px minmax(0,1fr) 240px;align-items:start;gap:24px;padding:28px}
+.request-avatar{width:48px;height:48px;border-radius:50%;background:#e9e1d4;color:#926b4f;font:400 23px 'Libre Baskerville',serif;display:grid;place-items:center;text-transform:uppercase}
+.request-meta{display:flex;flex-wrap:wrap;gap:16px;font-size:9px;color:#a17e63;font-weight:800;letter-spacing:1.2px}
+.request-main h3{font:400 23px 'Libre Baskerville',serif;color:#183346;margin:16px 0 9px}
+.request-role{font-size:12px;color:#748080;margin:0 0 9px}
+.request-role strong{font-weight:700;color:#354f5b}
+.request-client{font-size:11px;color:#79817e;margin:0 0 17px;overflow-wrap:anywhere}
+.request-tags{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.request-tags span{padding:6px 9px;background:#f0ede6;font-size:9px;color:#777a72;border-radius:2px;font-weight:700}
+.request-tags .request-state{font-size:9px}
+.request-state.new{background:#f2e1cc;color:#8c5e35}
+.request-state.review{background:#e4e9e9;color:#4f6d72}
+.request-state.progress{background:#dce7eb;color:#35617a}
+.request-state.waiting{background:#eef0dc;color:#647236}
+.request-state.done{background:#dfeadf;color:#426a4f}
+.request-state.cancelled{background:#ece6e7;color:#805e64}
+.request-actions{border-left:1px solid #e7e2d8;padding-left:22px;display:flex;flex-direction:column;gap:19px}
+.admin-open{display:flex;justify-content:space-between;gap:10px;align-items:center;background:#1a3448;color:#fff;padding:13px 15px;font-size:11px;font-weight:800;white-space:nowrap}
+.admin-open:hover{background:#344f60}
+.admin-stage-form{display:flex;flex-direction:column;gap:8px}
+.admin-stage-form label{font-size:9px;font-weight:800;letter-spacing:1px;color:#a08064}
+.admin-stage-form select{width:100%;border:1px solid #dbd5ca;color:#2b4654;background:#fbfaf5;padding:10px;font-size:11px}
+.admin-stage-form button{border:1px solid #bbab94;background:transparent;color:#80674e;padding:9px 10px;font-size:10px;font-weight:800}
+.admin-stage-form button:hover{background:#eee6db}
+.admin-empty{margin-top:15px;text-align:center;background:#fffefa;border:1px dashed #d7cbb9;padding:66px 20px}
+.admin-empty>span{font-size:34px;color:#b1906c}
+.admin-empty h3{font:400 24px 'Libre Baskerville',serif;color:#21394c}
+.admin-empty p{font-size:13px;color:#75817d;line-height:1.8;max-width:450px;margin:10px auto 20px}
+.admin-empty a{font-size:12px;font-weight:800;color:#936947;text-decoration:underline}
+.admin-limitation{font-size:11px;color:#878078}
+.admin-next{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px;margin-top:47px;border-top:1px solid #ddd5c8;padding-top:30px}
+.admin-next>div{padding:16px 14px 10px 0}
+.admin-next>div>span{font-size:24px;color:#b79772}
+.admin-next h3{font:400 17px 'Libre Baskerville',serif;margin:15px 0 10px}
+.admin-next p{font-size:11px;line-height:1.9;color:#75807d}
+@media(max-width:1060px){.admin-metrics{grid-template-columns:repeat(2,1fr)}.admin-request{grid-template-columns:43px minmax(0,1fr) 215px;gap:15px;padding:23px}.admin-tabs a{padding:9px 8px}}
+@media(max-width:800px){.admin-request{grid-template-columns:42px minmax(0,1fr)}.request-actions{grid-column:2;border-left:0;padding-left:0;flex-direction:row;flex-wrap:wrap;align-items:start}.request-actions>*{flex:1;min-width:165px}.admin-welcome{flex-direction:column;align-items:start}.admin-workspace-head{margin-top:55px}.admin-next{grid-template-columns:1fr 1fr}.admin-toolbar{align-items:stretch}.admin-find{flex:1}.admin-find input{width:100%;min-width:0;flex:1}}
+@media(max-width:550px){.admin-welcome{padding:40px 0 30px}.admin-welcome h1{font-size:31px}.admin-metrics{gap:8px}.admin-metric{padding:15px 12px;min-height:146px}.metric-top{font-size:8px}.metric-symbol{font-size:17px}.admin-metric>strong{font-size:32px}.metric-foot{font-size:9px}.admin-workspace-head{align-items:start}.admin-total{min-width:90px;padding-left:12px}.admin-workspace-head h2{font-size:26px}.admin-total strong{font-size:29px}.admin-toolbar{padding:10px}.admin-tabs{width:100%;gap:2px}.admin-tabs a{font-size:9px;padding:8px 6px}.admin-find{width:100%}.admin-request{padding:18px 14px;grid-template-columns:36px minmax(0,1fr);gap:10px}.request-avatar{width:36px;height:36px;font-size:19px}.request-main h3{font-size:20px}.request-actions{grid-column:1/-1}.admin-next{grid-template-columns:1fr}.admin-mode{font-size:8px}}
